@@ -1,0 +1,121 @@
+Login page :
+Email ID and Password accept
+check email if is unique
+Login with Google Authentication
+
+Register Page:
+Email ID
+Dr/St/Ot
+Mobile
+
+Forgot Password :
+Email ID/Mobile Number -> check if it exists and then send the reset code to it,
+then in the next page check if the reset code matches
+If matches then go to 
+New password and Confirm New Password
+
+Then to the Profile Page (Okay in the UI it is going to the Home Page) (change to Profile Page first)
+there allow to update the Profile details
+
+IN the Profile Page
+Options to enter/edit the below
+1)The profile Image
+2)the title - DR/ST
+3)the Name
+4)The phone number
+
+In the notes section
+there are 5 parts
+Video
+MCQ
+Clinical Case
+Q-Bank
+Flash card
+
+then again as sub in the Video
+Human Anantomy
+Physiology
+Biochemistry
+Pharmacology
+Pathology...
+
+like that ..will be updated in django ADMIN page
+
+Then again in Video/Human Anantomy
+1)Gametogenesis
+2)Epithelium
+. . . 
+like that will be updated in django ADMIN page
+
+each in a fomrat like -Title : gametogenesis , sub: Dr.ranhodas , Timer :30 , status : FREE/PREMIUM , Video url : "Can be any url fom any source"
+
+then again as sub in the MCQ
+Human Anantomy
+Physiology
+Biochemistry
+Pharmacology
+Pathology...
+
+like that ..will be updated in django ADMIN page
+
+Then again in MCQ/Human Anantomy
+1)Gametogenesis
+2)Epithelium
+. . . 
+like that will be updated in django ADMIN page
+
+each in a format like - Title : gametogenesis , Timer :30 , status : FREE/PREMIUM - ANOTHER tables having -
+[ question 1: "kkk",options:"hh","jjj","ggg","www"] , [ question 2: "kkk",options:"hh","jjj","ggg","www"] ,
+ [ question 3: "kkk",options:"hh","jjj","ggg","www"] , [ question 4: "kkk",options:"hh","jjj","ggg","www"] ,
+
+ then again as sub in the Clinical case
+Human Anantomy
+Physiology
+Biochemistry
+Pharmacology
+Pathology...
+
+like that ..will be updated in django ADMIN page
+
+Then again in MCQ/Clinical case
+1)title:Oral Cavity Examination sub: Dr Ramnchodas
+2)title:Auscultation Examination sub: Dr Mohanthomas
+. . . 
+like that will be updated in django ADMIN page
+
+each in a format like - Title : Oral Cavity Examination  - ANOTHER tables having -
+[Table Of contents : ['gather of Equipments','Introduction','general Inscpetion'......(will be added in admin page)....],
+[Gather Equipments : ['heather',"hhh"..(will be added in admin page)....]],
+['Introduction:'ggggggg'],
+]
+
+Then again in MCQ/Clinical case
+1)title:Oral Cavity Examination sub: Dr Ramnchodas
+2)title:Auscultation Examination sub: Dr Mohanthomas
+. . . 
+like that will be updated in django ADMIN page
+
+each in a format like - Title : Oral Cavity Examination  - ANOTHER tables having -
+[Table Of contents : ['gather of Equipments','Introduction','general Inscpetion'......(will be added in admin page)....],
+[Gather Equipments : ['heather',"hhh"..(will be added in admin page)....]],
+['Introduction:'ggggggg'],
+]
+
+then again as sub in the Flash card
+1)title:Oral Cavity Examination sub: Dr Ramnchodas
+2)title:Auscultation Examination sub: Dr Mohanthomas
+
+
+each in a format like - Title : Oral Cavity Examination  - ANOTHER tables having -
+['image1','image2'....(will be added in admin page).....]
+
+
+
+
+Now finally anotehr section Cavity 
+a categorizer -NEET 2023,1st year MBBS,2nd year mbbs..like thatbased on each and under each of them
+just like a post-card in instagaram
+Profile picture , name , Verified /unverified,content:"hghghhg"
+also that post must be related to teh profile icon where the user can Like it, share it,report it,bookmark it ,comment it...
+
+
