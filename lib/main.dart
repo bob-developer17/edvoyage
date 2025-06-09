@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/first/login/sign_up.dart';
 import 'package:frontend/first/onboarding/screen_four.dart';
 import 'package:frontend/first/onboarding/screen_three.dart';
 import 'package:frontend/first/onboarding/screen_two.dart';
+import 'package:frontend/second/TeachContent/Video/one.dart';
+import 'package:frontend/second/TeachContent/Video/two.dart';
 
 import 'package:frontend/utils/homescreenmaincard.dart';
 
@@ -44,7 +47,8 @@ class MyApp extends StatelessWidget {
         //   ['Flash Card', '23 Topics', '200 Videos'],
         //   ['MCQ', '23 Topics', '200 Videos'],
         // ),
-        body: SplashScreen(),
+        body: TeachContentVideo(),
+
         // body(),
       ),
     );

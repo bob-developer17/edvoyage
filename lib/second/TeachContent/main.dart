@@ -86,12 +86,12 @@ class _TeachContentState extends State<TeachContent> {
               context,
               MaterialPageRoute(
                 builder: (context) => TeachContentVideo(
-                  ['Human Anatomy', '', '10 Modules'],
-                  ['Physiology', '', '10 Modules'],
-                  ['Biochemistry', '', '10 Modules'],
-                  ['Pharmacology', '', '10 Modules'],
-                  ['Pathology', '', '10 Modules'],
-                ),
+                    // ['Human Anatomy', '', '10 Modules'],
+                    // ['Physiology', '', '10 Modules'],
+                    // ['Biochemistry', '', '10 Modules'],
+                    // ['Pharmacology', '', '10 Modules'],
+                    // ['Pathology', '', '10 Modules'],
+                    ),
               ),
             );
           }

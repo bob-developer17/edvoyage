@@ -1,23 +1,32 @@
 import 'package:flutter/material.dart';
 
+import '../../Services/api_client.dart';
+
 class ResponsiveCardWidget extends StatelessWidget {
   final String imageUrl;
   final String title;
   final String subtitle;
-  final String doctor;
-  final String lockIcon;
+  final String status;
+  final int timer;
+  final String video;
 
   const ResponsiveCardWidget({
     Key? key,
     required this.imageUrl,
     required this.title,
     required this.subtitle,
-    required this.lockIcon,
-    this.doctor = 'Dr.Ranchodas Chanchad,MD Anatomy',
+    required this.status,
+    required this.timer,
+    required this.video,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final hostport = apiservices();
+    final host = hostport[0];
+    final port = hostport[1];
+    final imageurl = "http://$host:$port/media/$imageUrl";
+
     final screenWidth = MediaQuery.of(context).size.width;
     final fontSize1 = screenWidth * 0.045;
     final fontSize2 = screenWidth * 0.03;
@@ -43,8 +52,8 @@ class ResponsiveCardWidget extends StatelessWidget {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.all(Radius.circular(12)),
-            child: Image.asset(
-              imageUrl,
+            child: Image.network(
+              imageurl,
               width: screenWidth * 0.15,
               height: screenWidth * 0.15,
               fit: BoxFit.cover,
@@ -64,7 +73,7 @@ class ResponsiveCardWidget extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  doctor,
+                  title,
                   style: TextStyle(
                     fontSize: fontSize2,
                     fontWeight: FontWeight.bold,
@@ -91,7 +100,7 @@ class ResponsiveCardWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Image.asset(
-                lockIcon,
+                status == "PREMIUM" ? 'assets/crown.png' : 'assets/free.png',
                 color: Colors.teal,
                 width: iconsize,
                 height: iconsize,

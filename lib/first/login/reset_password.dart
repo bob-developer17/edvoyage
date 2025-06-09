@@ -149,7 +149,11 @@ void showCustomSnackbar(BuildContext context) {
   Future.delayed(Duration(seconds: 3), () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Otp()), // Navigate to Otp screen
+      MaterialPageRoute(
+          builder: (context) => Otp(
+                mobile: '',
+                userType: '',
+              )), // Navigate to Otp screen
     );
   });
 }

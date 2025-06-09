@@ -73,7 +73,7 @@ class NotesCard extends StatelessWidget {
                 bottom: screenHeight * 0.015,
               ),
               child: Text(
-                video,
+                "$video Videos",
                 style: TextStyle(
                   fontSize: fontsize * 0.8,
                   color: grey3,

@@ -1,27 +1,14 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:frontend/second/utils/directorytitle.dart';
-
+import 'package:http/http.dart' as http;
+import '../../../Services/api_client.dart';
 import '../MCQ/two.dart';
 import '../notescard.dart';
 import 'two.dart';
 
 class TeachContentVideo extends StatefulWidget {
-  // Changed to StatefulWidget
-  final List<dynamic> one;
-  final List<dynamic> two;
-  final List<dynamic> three;
-  final List<dynamic> four;
-  final List<dynamic> five;
-
-  // get the height of the screen
-
-  // Constructor
-  const TeachContentVideo(
-    this.one,
-    this.two,
-    this.three,
-    this.four,
-    this.five, {
+  const TeachContentVideo({
     super.key,
   });
 
@@ -41,7 +28,43 @@ class _TeachContentState extends State<TeachContentVideo> {
   double get screenWidth3 => screenWidth * 0.67;
   double get fontsize1 => screenHeight * 0.023;
   double get fontsize2 => screenHeight * 0.018;
+  Future<List<dynamic>> fetchVideoTopics() async {
+    final List<String> api = apiservices();
+    final String host = api[0];
+    final String port = api[1];
+    final Uri apiUrl = Uri.parse("http://$host:$port/api/video-topics/");
+
+    print(apiUrl);
+
+    try {
+      final response = await http.get(apiUrl);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> json = jsonDecode(response.body);
+        final List<dynamic> videoTopics = json['topics'];
+        return videoTopics;
+      } else {
+        throw Exception('Failed to load video topics');
+      }
+    } catch (e) {
+      print('Error fetching video topics: $e');
+      return [];
+    }
+  }
+
+  List<dynamic> videoTopics = [];
+
   @override
+  void initState() {
+    super.initState();
+    fetchVideoTopics().then((data) {
+      setState(() {
+        videoTopics = data;
+        print(videoTopics);
+      });
+    });
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -59,15 +82,13 @@ class _TeachContentState extends State<TeachContentVideo> {
           child: Column(
             children: [
               DirectoryTitle(text1: 'Video', text2: 'None', text3: 'None'),
-              _buildVideoCard(widget.one[0], widget.one[1], widget.one[2]),
-              _buildVideoCard(widget.two[0], widget.two[1], widget.two[2]),
-              _buildVideoCard(
-                widget.three[0],
-                widget.three[1],
-                widget.three[2],
-              ),
-              _buildVideoCard(widget.four[0], widget.four[1], widget.four[2]),
-              _buildVideoCard(widget.five[0], widget.five[1], widget.five[2]),
+              for (var topic in videoTopics)
+                _buildVideoCard(
+                  topic['name'], // assuming 'name' is the title
+                  topic['doctor'], // replace with actual topic if available
+                  topic[
+                      'video_count'], // replace with actual video info if available
+                ),
             ],
           ),
         ),
@@ -76,6 +97,7 @@ class _TeachContentState extends State<TeachContentVideo> {
   }
 
   Widget _buildVideoCard(String title, String topic, String videos) {
+    print(title);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       child: GestureDetector(
@@ -85,7 +107,9 @@ class _TeachContentState extends State<TeachContentVideo> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => TeachContentVideoTwo(),
+                builder: (context) => TeachContentVideoTwo(
+                  topicId: 1,
+                ),
               ),
             );
           }

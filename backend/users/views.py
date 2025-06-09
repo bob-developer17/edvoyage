@@ -1,43 +1,63 @@
-"""
-User app API views:
-- Handles registration, login, profile retrieval and update.
-- Uses DRF APIViews and TokenAuthentication (can customize auth).
-"""
-
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework import status, permissions
-from django.contrib.auth import authenticate
-from .serializers import RegisterSerializer, ProfileSerializer
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+from .serializers import SendOTPSerializer
 
-class RegisterView(APIView):
+from rest_framework.permissions import AllowAny
+from rest_framework.authentication import BasicAuthentication
+from .models import UserProfile
+from rest_framework.authentication import SessionAuthentication
+
+
+class CsrfExemptSessionAuthentication(SessionAuthentication):
+    def enforce_csrf(self, request):
+        return  # Disable CSRF check
+
+
+class SendOTPView(APIView):
+    authentication_classes = [CsrfExemptSessionAuthentication, BasicAuthentication]
+    permission_classes = [AllowAny]
+
     def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "User registered successfully"}, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # print(request.data)
+        # serializer = SendOTPSerializer(data=request.data)
+        # if serializer.is_valid():
+        #     mobile = serializer.validated_data.get('mobile')
+        #     email = serializer.validated_data.get('email', None)
 
-class LoginView(APIView):
+        #     user_profile = UserProfile.objects.filter(mobile=mobile).first()
+
+        #     if not user_profile:
+        #         # Create new user profile only if mobile not exists
+        #         try:
+        #             user_profile = UserProfile.objects.create(mobile=mobile, email=email)
+        #         except Exception as e:
+        #             # Email unique error or others - just ignore and proceed
+        #             print(f"Exception on create: {e}")
+        #             user_profile = UserProfile.objects.filter(mobile=mobile).first()
+        #     # If user_profile exists, do NOT update email, just use it
+
+            return Response({"message": "OTP sent successfully."}, status=status.HTTP_200_OK)
+        # print(serializer.errors)
+        # return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class VerifyOTPView(APIView):
     def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
-        user = authenticate(request, username=email, password=password)
-        if user:
-            # Return token or user info here (implement token auth)
-            return Response({"message": "Login successful"})
-        return Response({"error": "Invalid credentials"}, status=status.HTTP_401_UNAUTHORIZED)
-
-class ProfileView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request):
-        serializer = ProfileSerializer(request.user)
-        return Response(serializer.data)
-
-    def put(self, request):
-        serializer = ProfileSerializer(request.user, data=request.data, partial=True)
+        serializer = VerifyOTPSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
-            return Response({"message": "Profile updated"})
+            user = serializer.validated_data['user']
+            refresh = RefreshToken.for_user(user)
+            return Response({
+                "message": "Login successful.",
+                "access": str(refresh.access_token),
+                "refresh": str(refresh),
+                "user": {
+                    "id": user.id,
+                    "email": user.email,
+                    "mobile": user.mobile,
+                    "user_type": user.user_type
+                }
+            }, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

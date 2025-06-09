@@ -1,7 +1,5 @@
 from django.contrib import admin
-from .models import Profile
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from .models import UserProfile
 
-@admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'title', 'phone')
-    search_fields = ('user__username', 'phone')
+admin.site.register(UserProfile)

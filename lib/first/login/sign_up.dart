@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:frontend/Services/api_client.dart';
+import 'package:http/http.dart' as http;
 import '../../utils/avatar.dart';
 import '../../utils/colors/colors.dart';
 import '../../utils/responsive.dart';
@@ -17,9 +21,46 @@ class SignUp extends StatefulWidget {
 }
 
 class _SignUpState extends State<SignUp> {
+  final TextEditingController _email = TextEditingController();
   final TextEditingController _mobile = TextEditingController();
-  final TextEditingController _countryController = TextEditingController();
+
   final formKey = GlobalKey<FormState>();
+
+  Future<void> sendOtpToUser() async {
+    print(_mobile.text.trim());
+    final String host = apiservices()[0], port = apiservices()[1];
+    final String apiUrl = "http://$host:$port/api/users/send-otp/";
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "mobile": "9999999999",
+          "email": "a@gmail.com",
+          // Add country code if needed e.g., "+91${_mobile.text.trim()}"
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        showCustomSnackbar(context); // Show OTP sent message
+      } else {
+        final body = jsonDecode(response.body);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(body['error'] ?? "Failed to send OTP"),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(e.toString()),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +105,10 @@ class _SignUpState extends State<SignUp> {
                     ),
                   ),
                   SizedBox(height: size.hp(3)),
-                  ResponsiveFormPage(),
+                  ResponsiveFormPage(
+                    emailController: _email,
+                    mobileController: _mobile,
+                  ),
                   SizedBox(height: size.hp(3)),
                   RichText(
                     textAlign: TextAlign.start,
@@ -94,7 +138,7 @@ class _SignUpState extends State<SignUp> {
                   SizedBox(height: size.hp(3)),
                   Center(
                     child: LongButton(
-                      action: () => showCustomSnackbar(context),
+                      action: () => sendOtpToUser(),
                       text: 'Continue',
                     ),
                   ),
@@ -150,7 +194,11 @@ void showCustomSnackbar(BuildContext context) {
   Future.delayed(Duration(seconds: 3), () {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Otp()),
+      MaterialPageRoute(
+          builder: (context) => Otp(
+                mobile: '',
+                userType: '',
+              )),
     );
   });
 }

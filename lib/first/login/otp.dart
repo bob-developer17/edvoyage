@@ -1,19 +1,23 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:frontend/first/homeScreen.dart';
-import 'package:frontend/utils/BottomNavigation/bottom_navigation.dart';
+import 'package:frontend/utils/responsive.dart';
+import 'package:http/http.dart' as http;
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../second/utils/colors.dart';
+import '../../utils/BottomNavigation/bottom_navigation.dart';
 import '../../utils/avatar.dart';
-import '../../utils/colors/colors.dart';
-import '../../utils/responsive.dart';
 import '../../widgets/back_arrow_button.dart';
 import '../../widgets/long_button.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
-
 class Otp extends StatefulWidget {
-  Otp({Key? key}) : super(key: key);
+  final String mobile;
+  final String userType;
+
+  Otp({Key? key, required this.mobile, required this.userType})
+      : super(key: key);
 
   @override
   State<Otp> createState() => _OtpState();
@@ -22,11 +26,11 @@ class Otp extends StatefulWidget {
 class _OtpState extends State<Otp> {
   OtpFieldController otpController = OtpFieldController();
   String otps = "";
-
+  bool _isLoading = false;
   Measurements? size;
 
   @override
-  Widget build(BuildContext context) {
+  Scaffold build(BuildContext context) {
     size = Measurements(MediaQuery.of(context).size);
     return Scaffold(
       backgroundColor: thirdColor,
@@ -83,14 +87,32 @@ class _OtpState extends State<Otp> {
                 },
               ),
               SizedBox(height: size!.hp(4)),
-              LongButton(
-                action: () async {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => BottomNavigation()),
-                  );
-                },
-                text: 'Verify',
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  width: size?.wp(87),
+                  height: size?.hp(5),
+                  decoration: BoxDecoration(
+                      color: secondaryColor,
+                      borderRadius: BorderRadius.circular(10)),
+                  child: TextButton(
+                    onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) {
+                        return BottomNavigation();
+                      }),
+                    ),
+                    child: Text(
+                      "Verify",
+                      textScaleFactor: 1.25,
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        color: thirdColor,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
               ),
               SizedBox(height: size!.hp(2)),
             ],
@@ -104,5 +126,5 @@ class _OtpState extends State<Otp> {
 Future<void> setMobileNumber(String mobilenumber) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setString('mobilenumber', mobilenumber);
-  print("The mobile number saved is \$mobilenumber");
+  print("The mobile number saved is $mobilenumber");
 }

@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:frontend/utils/colors/colors.dart';
 
-class ResponsiveFormPage extends StatelessWidget {
+class ResponsiveFormPage extends StatefulWidget {
+  final TextEditingController mobileController;
+  final TextEditingController emailController;
+
+  const ResponsiveFormPage(
+      {Key? key, required this.mobileController, required this.emailController})
+      : super(key: key);
+  @override
+  State<ResponsiveFormPage> createState() => _ResponsiveFormPageState();
+}
+
+class _ResponsiveFormPageState extends State<ResponsiveFormPage> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -21,9 +33,29 @@ class ResponsiveFormPage extends StatelessWidget {
                 width: size.width * 0.7,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10),
-                  child: Text("Email ID",
-                      style: TextStyle(
-                          fontSize: size.width * 0.055, color: grey2)),
+                  child: TextFormField(
+                    initialValue: "jjjjjjjjjj",
+                    // controller: widget.emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      hintText: 'Enter Email ID',
+                      hintStyle: TextStyle(
+                          fontSize: size.width * 0.05, color: Colors.black12),
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                    ),
+                    style:
+                        TextStyle(fontSize: size.width * 0.055, color: grey2),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter Email ID';
+                      } else if (value.length < 10) {
+                        return 'Enter valid Email ID';
+                      }
+                      return null;
+                    },
+                  ),
                 ),
               ),
             ],
@@ -75,11 +107,30 @@ class ResponsiveFormPage extends StatelessWidget {
                 width: size.width * 0.7,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10),
-                  child: Text("Mobile",
-                      style: TextStyle(
-                        color: grey2,
-                        fontSize: size.width * 0.055,
-                      )),
+                  child: TextFormField(
+                    initialValue: "9999999999",
+                    // controller: widget.mobileController,
+                    keyboardType: TextInputType.phone,
+                    inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                    decoration: InputDecoration(
+                      hintText: 'Enter mobile number',
+                      hintStyle: TextStyle(
+                          fontSize: size.width * 0.05, color: Colors.black12),
+                      border: InputBorder.none,
+                      focusedBorder: InputBorder.none,
+                      enabledBorder: InputBorder.none,
+                    ),
+                    style:
+                        TextStyle(fontSize: size.width * 0.055, color: grey2),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter mobile number';
+                      } else if (value.length < 10) {
+                        return 'Enter valid number';
+                      }
+                      return null;
+                    },
+                  ),
                 ),
               ),
             ],

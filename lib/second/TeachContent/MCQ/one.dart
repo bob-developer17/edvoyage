@@ -65,7 +65,7 @@ class _TeachContentState extends State<TeachContentMCQOne> {
             );
           }
         },
-        child: NotesCard(title: title, topic: '', video: topic),
+        child: NotesCard(title: title, topic: topic, video: topic),
       ),
     );
   }

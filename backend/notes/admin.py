@@ -1,18 +1,22 @@
 from django.contrib import admin
-from .models import Video, MCQTopic, ClinicalCase, Flashcard
+from .models import (
+    VideoTopic, VideoContent,
+    MCQTopic, MCQContent, MCQQuestion,
+    ClinicalCaseTopic, ClinicalCaseContent, ClinicalCaseSection,
+    FlashCardTopic, FlashCardContent, FlashCardImage
+)
 
-@admin.register(Video)
-class VideoAdmin(admin.ModelAdmin):
-    list_display = ('title', 'subject', 'timer', 'status')
+admin.site.register(VideoTopic)
+admin.site.register(VideoContent)
 
-@admin.register(MCQTopic)
-class MCQTopicAdmin(admin.ModelAdmin):
-    list_display = ('title', 'subject', 'timer', 'status')
+admin.site.register(MCQTopic)
+admin.site.register(MCQContent)
+admin.site.register(MCQQuestion)
 
-@admin.register(ClinicalCase)
-class ClinicalCaseAdmin(admin.ModelAdmin):
-    list_display = ('title', 'subject', 'sub')
+admin.site.register(ClinicalCaseTopic)
+admin.site.register(ClinicalCaseContent)
+admin.site.register(ClinicalCaseSection)
 
-@admin.register(Flashcard)
-class FlashcardAdmin(admin.ModelAdmin):
-    list_display = ('title', 'subject', 'sub')
+admin.site.register(FlashCardTopic)
+admin.site.register(FlashCardContent)
+admin.site.register(FlashCardImage)

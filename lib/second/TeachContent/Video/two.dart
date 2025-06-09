@@ -1,19 +1,23 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:frontend/second/utils/directorytitle.dart';
 import 'package:frontend/second/utils/teachcontentcard.dart';
+import 'package:http/http.dart' as http;
 
+import '../../../Services/api_client.dart';
 import '../MCQ/three/main.dart';
 
 class TeachContentVideoTwo extends StatefulWidget {
-  // Changed to StatefulWidget
+  final int topicId;
 
-  // get the height of the screen
-
-  // Constructor
-  const TeachContentVideoTwo({super.key});
+  const TeachContentVideoTwo({
+    super.key,
+    required this.topicId,
+  });
 
   @override
-  _TeachContentState createState() => _TeachContentState(); // Create state
+  _TeachContentState createState() => _TeachContentState();
 }
 
 class _TeachContentState extends State<TeachContentVideoTwo> {
@@ -28,7 +32,48 @@ class _TeachContentState extends State<TeachContentVideoTwo> {
   double get screenWidth3 => screenWidth * 0.7;
   double get fontsize1 => screenHeight * 0.025;
   double get fontsize2 => screenHeight * 0.018;
+  Future<List<dynamic>> fetchVideoContentsByTopic() async {
+    final int topicId = widget.topicId;
+    final List<String> api = apiservices();
+    final String host = api[0];
+    final String port = api[1];
+    final Uri apiUrl =
+        Uri.parse("http://$host:$port/api/video-topics/contents/");
+
+    print("POST to: $apiUrl");
+
+    try {
+      final response = await http.post(
+        apiUrl,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'topic_id': widget.topicId}),
+      );
+      if (response.statusCode == 200) {
+        print(response.body);
+        final json = jsonDecode(response.body);
+        print(json['contents']);
+        // just any return statement
+        return json['contents'];
+      } else {
+        throw Exception('Failed to load video content');
+      }
+    } catch (e) {
+      print('Error: $e');
+      return [];
+    }
+  }
+
+  List<dynamic> videoContents = [];
   @override
+  void initState() {
+    super.initState();
+    fetchVideoContentsByTopic().then((data) {
+      setState(() {
+        videoContents = data;
+      });
+    });
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -46,69 +91,15 @@ class _TeachContentState extends State<TeachContentVideoTwo> {
             children: [
               DirectoryTitle(
                   text1: 'Video', text2: 'Human Anatomy', text3: 'None'),
-              GestureDetector(
-                onTap: () {},
-                child: ResponsiveCardWidget(
-                  imageUrl: 'assets/xray.png',
-                  title: 'Gametogenesis',
-                  subtitle: "20 MCQ's",
-                  lockIcon: "assets/free.png",
+              for (var topic in videoContents)
+                ResponsiveCardWidget(
+                  imageUrl: topic['videocontentpic'],
+                  title: topic['title'],
+                  subtitle: topic["sub"],
+                  status: topic["status"],
+                  timer: topic["timer"],
+                  video: topic["video_url"],
                 ),
-              ),
-              ResponsiveCardWidget(
-                imageUrl: 'assets/xray.png',
-                title: 'Epithelium',
-                subtitle: "20 MCQ's",
-                lockIcon: "assets/crown.png",
-              ),
-              ResponsiveCardWidget(
-                imageUrl: 'assets/xray.png',
-                title: 'History of Glands',
-                subtitle: "20 MCQ's",
-                lockIcon: "assets/crown.png",
-              ),
-              ResponsiveCardWidget(
-                imageUrl: 'assets/xray.png',
-                title: 'Muscle & Cartilages',
-                subtitle: "20 MCQ's",
-                lockIcon: "assets/crown.png",
-              ),
-              ResponsiveCardWidget(
-                imageUrl: 'assets/xray.png',
-                title: 'Spinal Cord',
-                subtitle: "20 MCQ's",
-                lockIcon: "assets/crown.png",
-              ),
-              ResponsiveCardWidget(
-                imageUrl: 'assets/xray.png',
-                title: 'Cerebellum',
-                subtitle: "20 MCQ's",
-                lockIcon: "assets/crown.png",
-              ),
-              ResponsiveCardWidget(
-                imageUrl: 'assets/xray.png',
-                title: 'Osteology',
-                subtitle: "20 MCQ's",
-                lockIcon: "assets/crown.png",
-              ),
-              ResponsiveCardWidget(
-                imageUrl: 'assets/xray.png',
-                title: 'Nose & Tongue',
-                subtitle: "20 MCQ's",
-                lockIcon: "assets/crown.png",
-              ),
-              ResponsiveCardWidget(
-                imageUrl: 'assets/xray.png',
-                title: 'Larynx & Pharynx',
-                subtitle: "20 MCQ's",
-                lockIcon: "assets/crown.png",
-              ),
-              ResponsiveCardWidget(
-                imageUrl: 'assets/xray.png',
-                title: 'Facial Nerves',
-                subtitle: "20 MCQ's",
-                lockIcon: "assets/crown.png",
-              ),
             ],
           ),
         ),

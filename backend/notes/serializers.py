@@ -1,27 +1,58 @@
-"""
-Serializers for Notes app:
-- Serializes core learning content like Video, MCQTopic, ClinicalCase, Flashcard.
-"""
-
 from rest_framework import serializers
-from .models import Video, MCQTopic, ClinicalCase, Flashcard
+from .models import *
 
-class VideoSerializer(serializers.ModelSerializer):
+class PartSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Video
+        model = Part
         fields = '__all__'
 
-class MCQTopicSerializer(serializers.ModelSerializer):
+class CategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = MCQTopic
+        model = Category
         fields = '__all__'
 
-class ClinicalCaseSerializer(serializers.ModelSerializer):
+class SubCategorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = ClinicalCase
+        model = SubCategory
         fields = '__all__'
 
-class FlashcardSerializer(serializers.ModelSerializer):
+class VideoContentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Flashcard
+        model = VideoContent
+        fields = '__all__'
+
+class MCQQuestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MCQQuestion
+        fields = '__all__'
+
+class MCQContentSerializer(serializers.ModelSerializer):
+    questions = MCQQuestionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = MCQContent
+        fields = '__all__'
+
+class ClinicalCaseSectionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClinicalCaseSection
+        fields = '__all__'
+
+class ClinicalCaseContentSerializer(serializers.ModelSerializer):
+    sections = ClinicalCaseSectionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = ClinicalCaseContent
+        fields = '__all__'
+
+class FlashCardImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FlashCardImage
+        fields = '__all__'
+
+class FlashCardContentSerializer(serializers.ModelSerializer):
+    images = FlashCardImageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = FlashCardContent
         fields = '__all__'

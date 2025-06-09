@@ -1,25 +1,33 @@
-"""
-Notes app API views:
-- Serves core learning content: videos, MCQs, clinical cases, flashcards.
-- List and detail views for each content type.
-"""
+from django.http import JsonResponse
+from .models import VideoTopic
 
-from rest_framework import generics
-from .models import Video, MCQTopic, ClinicalCase, Flashcard
-from .serializers import VideoSerializer, MCQTopicSerializer, ClinicalCaseSerializer, FlashcardSerializer
+from django.views.decorators.csrf import csrf_exempt
+import json
 
-class VideoListView(generics.ListAPIView):
-    queryset = Video.objects.all()
-    serializer_class = VideoSerializer
+@csrf_exempt
+def get_all_video_topics(request):
+    topics = VideoTopic.objects.all().values()
+    print(topics)
+    return JsonResponse({'topics': list(topics)}, status=200)
 
-class MCQTopicListView(generics.ListAPIView):
-    queryset = MCQTopic.objects.all()
-    serializer_class = MCQTopicSerializer
-
-class ClinicalCaseListView(generics.ListAPIView):
-    queryset = ClinicalCase.objects.all()
-    serializer_class = ClinicalCaseSerializer
-
-class FlashcardListView(generics.ListAPIView):
-    queryset = Flashcard.objects.all()
-    serializer_class = FlashcardSerializer
+@csrf_exempt
+def get_video_contents_by_topic_post(request):
+    if request.method == 'POST':
+        try:
+            body = json.loads(request.body)
+            topic_id = body.get('topic_id')
+            if topic_id is None:
+                return JsonResponse({'error': 'topic_id not provided'}, status=400)
+            topic = VideoTopic.objects.prefetch_related('videos').get(id=topic_id)
+            contents = topic.videos.all().values(
+                'id', 'title', 'sub', 'timer', 'status', 'video_url','videocontentpic'
+            )
+            print(contents)
+            return JsonResponse({
+                'contents': list(contents)
+            }, status=200)
+        except VideoTopic.DoesNotExist:
+            return JsonResponse({'error': 'Topic not found'}, status=404)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON'}, status=400)
+    return JsonResponse({'error': 'Only POST method allowed'}, status=405)
