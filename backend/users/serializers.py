@@ -1,8 +1,8 @@
 from rest_framework import serializers
-from .models import Profile
+from .models import StudentProfile
 class SendOTPSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Profile
+        model = StudentProfile
         fields = ['email', 'mobile']
 
     def validate(self, data):

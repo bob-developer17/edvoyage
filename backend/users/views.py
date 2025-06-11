@@ -6,7 +6,7 @@ from .serializers import SendOTPSerializer
 
 from rest_framework.permissions import AllowAny
 from rest_framework.authentication import BasicAuthentication
-from .models import Profile
+from .models import StudentProfile
 from rest_framework.authentication import SessionAuthentication
 
 

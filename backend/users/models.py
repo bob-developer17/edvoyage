@@ -37,6 +37,13 @@ class Batch(models.Model):
 class StudentProfile(models.Model):
     full_name = models.CharField(max_length=150)
     profile_photo = models.ImageField(upload_to='profile_photos/')
+    DESIGNATION_CHOICES = [
+        ('DR', 'Doctor'),
+        ('ST', 'Student'),
+        ('VR', 'Volunteer'),
+    ]
+    designation = models.CharField(max_length=2, choices=DESIGNATION_CHOICES)
+    phone_number = models.CharField(max_length=15)
     batch = models.ForeignKey(Batch, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
@@ -75,24 +82,6 @@ class Comment(models.Model):
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-
-
-class Profile(models.Model):
-    DESIGNATION_CHOICES = [
-        ('DR', 'Doctor'),
-        ('ST', 'Student'),
-        ('VR', 'Volunteer'),
-    ]
-    name = models.CharField(max_length=150)
-    designation = models.CharField(max_length=2, choices=DESIGNATION_CHOICES)
-    phone_number = models.CharField(max_length=15)
-
-    def __str__(self):
-        return f"{self.name} ({self.get_designation_display()})"
-
-
-
-
 class Country(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
@@ -116,14 +105,15 @@ class University(models.Model):
     course_duration = models.CharField(max_length=100)  # e.g. "4 years", "2 years"
     course_fee = models.DecimalField(max_digits=12, decimal_places=2)  # e.g. 15000.00
     shortlisted_by = models.ManyToManyField(
-        settings.AUTH_USER_MODEL,
-        related_name='shortlisted_universities',
-        blank=True,
-        help_text="Users who have shortlisted this university"
+    StudentProfile,
+    related_name='shortlisted_universities',
+    blank=True,
+    help_text="StudentProfiles who have shortlisted this university"
     )
+
 
     def __str__(self):
         return f"{self.name} - {self.country.name}"
 
     def is_shortlisted_by(self, user):
-        return self.shortlisted_by.filter(id=user.id).exists()
+        return self.shortlisted_by.filter(id=StudentProfile.id).exists()
