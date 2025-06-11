@@ -22,28 +22,30 @@ class VideoContent(models.Model):
     timer = models.PositiveIntegerField(help_text="Duration in seconds")
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)
     video_url = models.URLField()
-    # a fied for image uplaoding
     videocontentpic = models.ImageField(upload_to='videocontentpic/', blank=True, null=True)
-
 
     def __str__(self):
         return self.title
 
 ### -------------------- MCQ --------------------
-
 class MCQTopic(models.Model):
     name = models.CharField(max_length=100, unique=True)
+    
     def __str__(self):
         return self.name
 
+
 class MCQContent(models.Model):
     topic = models.ForeignKey(MCQTopic, on_delete=models.CASCADE, related_name='mcqs')
-    title = models.CharField(max_length=200)
-    timer = models.PositiveIntegerField()
+    title = models.CharField(max_length=200, null=True, blank=True) 
     status = models.CharField(max_length=10, choices=STATUS_CHOICES)
+    mcqcontentpic = models.ImageField(upload_to='mcqcontentpic/', blank=True, null=True)
 
     def __str__(self):
-        return self.title
+        title_display = self.title if self.title else "Content"
+        return f"{self.topic.name} - {title_display}"
+
+
 
 class MCQQuestion(models.Model):
     mcq_content = models.ForeignKey(MCQContent, on_delete=models.CASCADE, related_name='questions')
@@ -52,54 +54,19 @@ class MCQQuestion(models.Model):
     option_2 = models.CharField(max_length=200)
     option_3 = models.CharField(max_length=200)
     option_4 = models.CharField(max_length=200)
-    correct_option = models.PositiveSmallIntegerField(choices=[(1, 'Option 1'), (2, 'Option 2'), (3, 'Option 3'), (4, 'Option 4')])
+    correct_option = models.PositiveSmallIntegerField(choices=[
+        (1, 'Option 1'),
+        (2, 'Option 2'),
+        (3, 'Option 3'),
+        (4, 'Option 4')
+    ])
 
     def __str__(self):
-        return self.question[:50]
+        # You can return the question and show topic names like this:
+        topic_name = self.mcq_content.topic.name if self.mcq_content else 'No Topic'
+        title_display = self.mcq_content.title if self.mcq_content else "Content"
+        return f"{topic_name} - {title_display} : {self.question[:50]}..."
 
 ### -------------------- CLINICAL CASE --------------------
 
-class ClinicalCaseTopic(models.Model):
-    name = models.CharField(max_length=100, unique=True)
 
-    def __str__(self):
-        return self.name
-
-class ClinicalCaseContent(models.Model):
-    topic = models.ForeignKey(ClinicalCaseTopic, on_delete=models.CASCADE, related_name='cases')
-    title = models.CharField(max_length=200)
-    sub = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.title
-
-class ClinicalCaseSection(models.Model):
-    clinical_case = models.ForeignKey(ClinicalCaseContent, on_delete=models.CASCADE, related_name='sections')
-    section_title = models.CharField(max_length=200)
-    content = models.TextField()
-
-    def __str__(self):
-        return f"{self.clinical_case.title} - {self.section_title}"
-
-### -------------------- FLASHCARDS --------------------
-
-class FlashCardTopic(models.Model):
-    name = models.CharField(max_length=100, unique=True)
-
-    def __str__(self):
-        return self.name
-
-class FlashCardContent(models.Model):
-    topic = models.ForeignKey(FlashCardTopic, on_delete=models.CASCADE, related_name='flashcards')
-    title = models.CharField(max_length=200)
-    sub = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.title
-
-class FlashCardImage(models.Model):
-    flashcard = models.ForeignKey(FlashCardContent, on_delete=models.CASCADE, related_name='images')
-    image = models.ImageField(upload_to='flashcards/')
-
-    def __str__(self):
-        return f"Image for {self.flashcard.title}"

@@ -40,6 +40,10 @@ INSTALLED_APPS = [
     'rest_framework',
     'notes',
      'users',
+     'notes2',
+     'overseas',
+     'chat',
+   
 
 ]
 
