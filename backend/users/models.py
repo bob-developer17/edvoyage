@@ -79,7 +79,7 @@ class Comment(models.Model):
 
 class Profile(models.Model):
     DESIGNATION_CHOICES = [
-        ('DR', 'Director'),
+        ('DR', 'Doctor'),
         ('ST', 'Student'),
         ('VR', 'Volunteer'),
     ]
